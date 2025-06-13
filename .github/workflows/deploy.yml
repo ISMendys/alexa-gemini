@@ -6,10 +6,6 @@ on:
   pull_request:
     branches: [ main, master ]
 
-env:
-  REGISTRY: ghcr.io
-  IMAGE_NAME: ${{ github.repository }}
-
 jobs:
   test:
     runs-on: ubuntu-latest
@@ -47,60 +43,12 @@ jobs:
         sleep 5
         curl -f http://localhost:8000/health || exit 1
 
-  build-and-push:
+  deploy:
     needs: test
     runs-on: ubuntu-latest
     if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master')
     
-    permissions:
-      contents: read
-      packages: write
-
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
-
-    - name: Set up Docker Buildx
-      uses: docker/setup-buildx-action@v3
-
-    - name: Log in to Container Registry
-      uses: docker/login-action@v3
-      with:
-        registry: ${{ env.REGISTRY }}
-        username: ${{ github.actor }}
-        password: ${{ secrets.GITHUB_TOKEN }}
-
-    - name: Extract metadata
-      id: meta
-      uses: docker/metadata-action@v5
-      with:
-        images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
-        tags: |
-          type=ref,event=branch
-          type=ref,event=pr
-          type=sha,prefix={{branch}}-
-          type=raw,value=latest,enable={{is_default_branch}}
-
-    - name: Build and push Docker image
-      uses: docker/build-push-action@v5
-      with:
-        context: .
-        platforms: linux/amd64,linux/arm64
-        push: true
-        tags: ${{ steps.meta.outputs.tags }}
-        labels: ${{ steps.meta.outputs.labels }}
-        cache-from: type=gha
-        cache-to: type=gha,mode=max
-
-  deploy:
-    needs: build-and-push
-    runs-on: ubuntu-latest
-    if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master')
-    
-    steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
-
     - name: Deploy to server
       uses: appleboy/ssh-action@v1.0.0
       with:
@@ -109,35 +57,27 @@ jobs:
         key: ${{ secrets.SSH_PRIVATE_KEY }}
         port: ${{ secrets.PORT }}
         script: |
-          # Navigate to project directory
+          # Navegue para o diretório do projeto
           cd /home/${{ secrets.USERNAME }}/alexa-gemini-plugin || exit 1
           
-          # Pull latest changes
+          # Puxe as últimas alterações do código
           git pull origin main || git pull origin master
           
-          # Log in to GitHub Container Registry
-          echo ${{ secrets.GITHUB_TOKEN }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+          # Pare os contêineres antigos e construa a nova imagem localmente
+          # O comando --build força a reconstrução da imagem a partir do Dockerfile
+          docker-compose up -d --build
           
-          # Pull latest image
-          docker pull ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
+          # Remova imagens Docker antigas e não utilizadas
+          docker image prune -a -f
           
-          # Stop and remove old containers
-          docker-compose down || true
-          
-          # Start new containers
-          docker-compose up -d
-          
-          # Clean up old images
-          docker image prune -f
-          
-          # Verify deployment
+          # Verifique se a aplicação está rodando
           sleep 10
           curl -f http://localhost/health || exit 1
           
           echo "Deployment completed successfully!"
 
   notify:
-    needs: [test, build-and-push, deploy]
+    needs: [test, deploy]
     runs-on: ubuntu-latest
     if: always()
     
@@ -150,4 +90,3 @@ jobs:
           echo "❌ Deployment failed!"
           exit 1
         fi
-

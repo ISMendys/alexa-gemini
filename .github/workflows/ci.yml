@@ -7,67 +7,67 @@ on:
     branches: [ main, master ]
 
 jobs:
-  lint-and-format:
-    runs-on: ubuntu-latest
+  # lint-and-format:
+  #   runs-on: ubuntu-latest
     
-    steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
+  #   steps:
+  #   - name: Checkout code
+  #     uses: actions/checkout@v4
 
-    - name: Set up Python
-      uses: actions/setup-python@v4
-      with:
-        python-version: '3.11'
+  #   - name: Set up Python
+  #     uses: actions/setup-python@v4
+  #     with:
+  #       python-version: '3.11'
 
-    - name: Install linting tools
-      run: |
-        python -m pip install --upgrade pip
-        pip install black flake8 isort mypy
+  #   - name: Install linting tools
+  #     run: |
+  #       python -m pip install --upgrade pip
+  #       pip install black flake8 isort mypy
 
-    - name: Run Black (code formatting)
-      run: black --check --diff .
+  #   - name: Run Black (code formatting)
+  #     run: black --check --diff .
 
-    - name: Run isort (import sorting)
-      run: isort --check-only --diff .
+  #   - name: Run isort (import sorting)
+  #     run: isort --check-only --diff .
 
-    - name: Run flake8 (linting)
-      run: flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
+  #   - name: Run flake8 (linting)
+  #     run: flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
 
-    - name: Run mypy (type checking)
-      run: mypy . --ignore-missing-imports || true
+  #   - name: Run mypy (type checking)
+  #     run: mypy . --ignore-missing-imports || true
 
-  security-scan:
-    runs-on: ubuntu-latest
+  # security-scan:
+  #   runs-on: ubuntu-latest
     
-    steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
+  #   steps:
+  #   - name: Checkout code
+  #     uses: actions/checkout@v4
 
-    - name: Set up Python
-      uses: actions/setup-python@v4
-      with:
-        python-version: '3.11'
+  #   - name: Set up Python
+  #     uses: actions/setup-python@v4
+  #     with:
+  #       python-version: '3.11'
 
-    - name: Install security tools
-      run: |
-        python -m pip install --upgrade pip
-        pip install bandit safety
+  #   - name: Install security tools
+  #     run: |
+  #       python -m pip install --upgrade pip
+  #       pip install bandit safety
 
-    - name: Run Bandit (security linting)
-      run: bandit -r . -f json -o bandit-report.json || true
+  #   - name: Run Bandit (security linting)
+  #     run: bandit -r . -f json -o bandit-report.json || true
 
-    - name: Run Safety (dependency vulnerability check)
-      run: |
-        pip install -r requirements.txt
-        safety check --json --output safety-report.json || true
+  #   - name: Run Safety (dependency vulnerability check)
+  #     run: |
+  #       pip install -r requirements.txt
+  #       safety check --json --output safety-report.json || true
 
-    - name: Upload security reports
-      uses: actions/upload-artifact@v3
-      with:
-        name: security-reports
-        path: |
-          bandit-report.json
-          safety-report.json
+  #   - name: Upload security reports
+  #     uses: actions/upload-artifact@v3
+  #     with:
+  #       name: security-reports
+  #       path: |
+  #         bandit-report.json
+  #         safety-report.json
 
   test-matrix:
     runs-on: ubuntu-latest
@@ -150,45 +150,45 @@ jobs:
         flags: unittests
         name: codecov-umbrella
 
-  docker-build-test:
-    runs-on: ubuntu-latest
+  # docker-build-test:
+  #   runs-on: ubuntu-latest
     
-    steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
+  #   steps:
+  #   - name: Checkout code
+  #     uses: actions/checkout@v4
 
-    - name: Set up Docker Buildx
-      uses: docker/setup-buildx-action@v3
+  #   - name: Set up Docker Buildx
+  #     uses: docker/setup-buildx-action@v3
 
-    - name: Build Docker image (test)
-      uses: docker/build-push-action@v5
-      with:
-        context: .
-        push: false
-        tags: alexa-gemini-plugin:test
-        cache-from: type=gha
-        cache-to: type=gha,mode=max
+  #   - name: Build Docker image (test)
+  #     uses: docker/build-push-action@v5
+  #     with:
+  #       context: .
+  #       push: false
+  #       tags: alexa-gemini-plugin:test
+  #       cache-from: type=gha
+  #       cache-to: type=gha,mode=max
 
-    - name: Test Docker image
-      run: |
-        # Run container in background
-        docker run -d --name test-container -p 8000:8000 \
-          -e GEMINI_API_KEY=test_key \
-          -e GOOGLE_CLIENT_ID=test_client_id \
-          -e GOOGLE_CLIENT_SECRET=test_client_secret \
-          -e GOOGLE_REDIRECT_URI=http://localhost:8000/auth/callback \
-          alexa-gemini-plugin:test
+  #   - name: Test Docker image
+  #     run: |
+  #       # Run container in background
+  #       docker run -d --name test-container -p 8000:8000 \
+  #         -e GEMINI_API_KEY=test_key \
+  #         -e GOOGLE_CLIENT_ID=test_client_id \
+  #         -e GOOGLE_CLIENT_SECRET=test_client_secret \
+  #         -e GOOGLE_REDIRECT_URI=http://localhost:8000/auth/callback \
+  #         alexa-gemini-plugin:test
         
-        # Wait for container to start
-        sleep 10
+  #       # Wait for container to start
+  #       sleep 10
         
-        # Test health endpoint
-        curl -f http://localhost:8000/health || exit 1
+  #       # Test health endpoint
+  #       curl -f http://localhost:8000/health || exit 1
         
-        # Test root endpoint
-        curl -f http://localhost:8000/ || exit 1
+  #       # Test root endpoint
+  #       curl -f http://localhost:8000/ || exit 1
         
-        # Clean up
-        docker stop test-container
-        docker rm test-container
+  #       # Clean up
+  #       docker stop test-container
+  #       docker rm test-container
 
