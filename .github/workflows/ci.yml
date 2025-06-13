@@ -1,194 +1,194 @@
-name: CI/CD Pipeline
+# name: CI/CD Pipeline
 
-on:
-  push:
-    branches: [ main, master, develop ]
-  pull_request:
-    branches: [ main, master ]
+# on:
+#   push:
+#     branches: [ main, master, develop ]
+#   pull_request:
+#     branches: [ main, master ]
 
-jobs:
-  # lint-and-format:
-  #   runs-on: ubuntu-latest
+# jobs:
+#   # lint-and-format:
+#   #   runs-on: ubuntu-latest
     
-  #   steps:
-  #   - name: Checkout code
-  #     uses: actions/checkout@v4
+#   #   steps:
+#   #   - name: Checkout code
+#   #     uses: actions/checkout@v4
 
-  #   - name: Set up Python
-  #     uses: actions/setup-python@v4
-  #     with:
-  #       python-version: '3.11'
+#   #   - name: Set up Python
+#   #     uses: actions/setup-python@v4
+#   #     with:
+#   #       python-version: '3.11'
 
-  #   - name: Install linting tools
-  #     run: |
-  #       python -m pip install --upgrade pip
-  #       pip install black flake8 isort mypy
+#   #   - name: Install linting tools
+#   #     run: |
+#   #       python -m pip install --upgrade pip
+#   #       pip install black flake8 isort mypy
 
-  #   - name: Run Black (code formatting)
-  #     run: black --check --diff .
+#   #   - name: Run Black (code formatting)
+#   #     run: black --check --diff .
 
-  #   - name: Run isort (import sorting)
-  #     run: isort --check-only --diff .
+#   #   - name: Run isort (import sorting)
+#   #     run: isort --check-only --diff .
 
-  #   - name: Run flake8 (linting)
-  #     run: flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
+#   #   - name: Run flake8 (linting)
+#   #     run: flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
 
-  #   - name: Run mypy (type checking)
-  #     run: mypy . --ignore-missing-imports || true
+#   #   - name: Run mypy (type checking)
+#   #     run: mypy . --ignore-missing-imports || true
 
-  # security-scan:
-  #   runs-on: ubuntu-latest
+#   # security-scan:
+#   #   runs-on: ubuntu-latest
     
-  #   steps:
-  #   - name: Checkout code
-  #     uses: actions/checkout@v4
+#   #   steps:
+#   #   - name: Checkout code
+#   #     uses: actions/checkout@v4
 
-  #   - name: Set up Python
-  #     uses: actions/setup-python@v4
-  #     with:
-  #       python-version: '3.11'
+#   #   - name: Set up Python
+#   #     uses: actions/setup-python@v4
+#   #     with:
+#   #       python-version: '3.11'
 
-  #   - name: Install security tools
-  #     run: |
-  #       python -m pip install --upgrade pip
-  #       pip install bandit safety
+#   #   - name: Install security tools
+#   #     run: |
+#   #       python -m pip install --upgrade pip
+#   #       pip install bandit safety
 
-  #   - name: Run Bandit (security linting)
-  #     run: bandit -r . -f json -o bandit-report.json || true
+#   #   - name: Run Bandit (security linting)
+#   #     run: bandit -r . -f json -o bandit-report.json || true
 
-  #   - name: Run Safety (dependency vulnerability check)
-  #     run: |
-  #       pip install -r requirements.txt
-  #       safety check --json --output safety-report.json || true
+#   #   - name: Run Safety (dependency vulnerability check)
+#   #     run: |
+#   #       pip install -r requirements.txt
+#   #       safety check --json --output safety-report.json || true
 
-  #   - name: Upload security reports
-  #     uses: actions/upload-artifact@v3
-  #     with:
-  #       name: security-reports
-  #       path: |
-  #         bandit-report.json
-  #         safety-report.json
+#   #   - name: Upload security reports
+#   #     uses: actions/upload-artifact@v3
+#   #     with:
+#   #       name: security-reports
+#   #       path: |
+#   #         bandit-report.json
+#   #         safety-report.json
 
-  test-matrix:
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        python-version: ['3.11', '3.12']
+#   test-matrix:
+#     runs-on: ubuntu-latest
+#     strategy:
+#       matrix:
+#         python-version: ['3.11', '3.12']
     
-    steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
+#     steps:
+#     - name: Checkout code
+#       uses: actions/checkout@v4
 
-    - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v4
-      with:
-        python-version: ${{ matrix.python-version }}
+#     - name: Set up Python ${{ matrix.python-version }}
+#       uses: actions/setup-python@v4
+#       with:
+#         python-version: ${{ matrix.python-version }}
 
-    - name: Cache pip dependencies
-      uses: actions/cache@v3
-      with:
-        path: ~/.cache/pip
-        key: ${{ runner.os }}-pip-${{ matrix.python-version }}-${{ hashFiles('**/requirements.txt') }}
-        restore-keys: |
-          ${{ runner.os }}-pip-${{ matrix.python-version }}-
+#     - name: Cache pip dependencies
+#       uses: actions/cache@v3
+#       with:
+#         path: ~/.cache/pip
+#         key: ${{ runner.os }}-pip-${{ matrix.python-version }}-${{ hashFiles('**/requirements.txt') }}
+#         restore-keys: |
+#           ${{ runner.os }}-pip-${{ matrix.python-version }}-
 
-    - name: Install dependencies
-      run: |
-        python -m pip install --upgrade pip
-        pip install -r requirements.txt
-        pip install pytest pytest-asyncio pytest-cov httpx
+#     - name: Install dependencies
+#       run: |
+#         python -m pip install --upgrade pip
+#         pip install -r requirements.txt
+#         pip install pytest pytest-asyncio pytest-cov httpx
 
-    - name: Create test environment file
-      run: |
-        cat > .env.test << EOF
-        GEMINI_API_KEY=test_key
-        GOOGLE_CLIENT_ID=test_client_id
-        GOOGLE_CLIENT_SECRET=test_client_secret
-        GOOGLE_REDIRECT_URI=http://localhost:8000/auth/callback
-        EOF
+#     - name: Create test environment file
+#       run: |
+#         cat > .env.test << EOF
+#         GEMINI_API_KEY=test_key
+#         GOOGLE_CLIENT_ID=test_client_id
+#         GOOGLE_CLIENT_SECRET=test_client_secret
+#         GOOGLE_REDIRECT_URI=http://localhost:8000/auth/callback
+#         EOF
 
-    - name: Run tests with coverage
-      run: |
-        python -m pytest tests/ -v --cov=. --cov-report=xml --cov-report=html || echo "No tests found, creating basic test..."
+#     - name: Run tests with coverage
+#       run: |
+#         python -m pytest tests/ -v --cov=. --cov-report=xml --cov-report=html || echo "No tests found, creating basic test..."
         
-        # Create basic test if none exist
-        mkdir -p tests
-        cat > tests/test_basic.py << 'EOF'
-        import pytest
-        from fastapi.testclient import TestClient
-        from main import app
+#         # Create basic test if none exist
+#         mkdir -p tests
+#         cat > tests/test_basic.py << 'EOF'
+#         import pytest
+#         from fastapi.testclient import TestClient
+#         from main import app
 
-        client = TestClient(app)
+#         client = TestClient(app)
 
-        def test_root_endpoint():
-            response = client.get("/")
-            assert response.status_code == 200
-            assert "message" in response.json()
+#         def test_root_endpoint():
+#             response = client.get("/")
+#             assert response.status_code == 200
+#             assert "message" in response.json()
 
-        def test_health_endpoint():
-            response = client.get("/health")
-            assert response.status_code == 200
-            assert response.json()["status"] == "healthy"
+#         def test_health_endpoint():
+#             response = client.get("/health")
+#             assert response.status_code == 200
+#             assert response.json()["status"] == "healthy"
 
-        def test_alexa_endpoint_post():
-            test_request = {
-                "version": "1.0",
-                "session": {"new": True, "user": {"userId": "test"}},
-                "request": {"type": "LaunchRequest"}
-            }
-            response = client.post("/alexa", json=test_request)
-            assert response.status_code == 200
-            assert "response" in response.json()
-        EOF
+#         def test_alexa_endpoint_post():
+#             test_request = {
+#                 "version": "1.0",
+#                 "session": {"new": True, "user": {"userId": "test"}},
+#                 "request": {"type": "LaunchRequest"}
+#             }
+#             response = client.post("/alexa", json=test_request)
+#             assert response.status_code == 200
+#             assert "response" in response.json()
+#         EOF
         
-        python -m pytest tests/ -v --cov=. --cov-report=xml
+#         python -m pytest tests/ -v --cov=. --cov-report=xml
 
-    - name: Upload coverage reports
-      uses: codecov/codecov-action@v3
-      with:
-        file: ./coverage.xml
-        flags: unittests
-        name: codecov-umbrella
+#     - name: Upload coverage reports
+#       uses: codecov/codecov-action@v3
+#       with:
+#         file: ./coverage.xml
+#         flags: unittests
+#         name: codecov-umbrella
 
-  # docker-build-test:
-  #   runs-on: ubuntu-latest
+#   # docker-build-test:
+#   #   runs-on: ubuntu-latest
     
-  #   steps:
-  #   - name: Checkout code
-  #     uses: actions/checkout@v4
+#   #   steps:
+#   #   - name: Checkout code
+#   #     uses: actions/checkout@v4
 
-  #   - name: Set up Docker Buildx
-  #     uses: docker/setup-buildx-action@v3
+#   #   - name: Set up Docker Buildx
+#   #     uses: docker/setup-buildx-action@v3
 
-  #   - name: Build Docker image (test)
-  #     uses: docker/build-push-action@v5
-  #     with:
-  #       context: .
-  #       push: false
-  #       tags: alexa-gemini-plugin:test
-  #       cache-from: type=gha
-  #       cache-to: type=gha,mode=max
+#   #   - name: Build Docker image (test)
+#   #     uses: docker/build-push-action@v5
+#   #     with:
+#   #       context: .
+#   #       push: false
+#   #       tags: alexa-gemini-plugin:test
+#   #       cache-from: type=gha
+#   #       cache-to: type=gha,mode=max
 
-  #   - name: Test Docker image
-  #     run: |
-  #       # Run container in background
-  #       docker run -d --name test-container -p 8000:8000 \
-  #         -e GEMINI_API_KEY=test_key \
-  #         -e GOOGLE_CLIENT_ID=test_client_id \
-  #         -e GOOGLE_CLIENT_SECRET=test_client_secret \
-  #         -e GOOGLE_REDIRECT_URI=http://localhost:8000/auth/callback \
-  #         alexa-gemini-plugin:test
+#   #   - name: Test Docker image
+#   #     run: |
+#   #       # Run container in background
+#   #       docker run -d --name test-container -p 8000:8000 \
+#   #         -e GEMINI_API_KEY=test_key \
+#   #         -e GOOGLE_CLIENT_ID=test_client_id \
+#   #         -e GOOGLE_CLIENT_SECRET=test_client_secret \
+#   #         -e GOOGLE_REDIRECT_URI=http://localhost:8000/auth/callback \
+#   #         alexa-gemini-plugin:test
         
-  #       # Wait for container to start
-  #       sleep 10
+#   #       # Wait for container to start
+#   #       sleep 10
         
-  #       # Test health endpoint
-  #       curl -f http://localhost:8000/health || exit 1
+#   #       # Test health endpoint
+#   #       curl -f http://localhost:8000/health || exit 1
         
-  #       # Test root endpoint
-  #       curl -f http://localhost:8000/ || exit 1
+#   #       # Test root endpoint
+#   #       curl -f http://localhost:8000/ || exit 1
         
-  #       # Clean up
-  #       docker stop test-container
-  #       docker rm test-container
+#   #       # Clean up
+#   #       docker stop test-container
+#   #       docker rm test-container
 
