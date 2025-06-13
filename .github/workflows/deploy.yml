@@ -41,7 +41,7 @@ jobs:
       run: |
         timeout 10s python main.py &
         sleep 5
-        curl -f http://localhost:8000/health || exit 1
+        curl -f http://localhost:9000/health || exit 1
 
   deploy:
     needs: test
@@ -86,7 +86,7 @@ jobs:
           
           # Verifique se a aplicação está rodando
           sleep 10
-          curl -f http://localhost/health || exit 1
+          curl -f http://localhost:9000/health || exit 1
           
           echo "Deployment completed successfully!"
 
