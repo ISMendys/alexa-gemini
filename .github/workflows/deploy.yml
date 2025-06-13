@@ -63,6 +63,7 @@ jobs:
           REPO_URL="git@github.com:ISMendys/alexa-gemini.git"
 
           # --- Lógica de Deploy ---
+          ssh-keyscan github.com >> ~/.ssh/known_hosts
           # Verifica se o diretório de destino já existe
           if [ -d "$TARGET_DIR" ]; then
             # Se existe, entra na pasta e atualiza o código
