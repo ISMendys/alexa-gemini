@@ -79,10 +79,10 @@ jobs:
           
           # Pare os contêineres antigos e construa a nova imagem localmente
           # O comando --build força a reconstrução da imagem a partir do Dockerfile
-          docker-compose up -d --build
+          sudo docker compose up -d --build
           
           # Remova imagens Docker antigas e não utilizadas
-          docker image prune -a -f
+          sudo docker image prune -a -f
           
           # Verifique se a aplicação está rodando
           sleep 10
