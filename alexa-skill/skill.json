@@ -1,0 +1,80 @@
+{
+  "manifest": {
+    "publishingInformation": {
+      "locales": {
+        "pt-BR": {
+          "summary": "Conecte sua Alexa ao Google Gemini para conversas inteligentes e gerenciamento de agenda.",
+          "examplePhrases": [
+            "Alexa, abra gemini inteligente",
+            "Alexa, peça ao gemini inteligente para consultar minha agenda",
+            "Alexa, peça ao gemini inteligente para conversar comigo"
+          ],
+          "keywords": [
+            "gemini",
+            "google",
+            "agenda",
+            "inteligência artificial",
+            "assistente",
+            "calendário"
+          ],
+          "name": "Gemini Inteligente",
+          "description": "O Gemini Inteligente conecta sua Alexa ao poderoso Google Gemini, permitindo conversas mais inteligentes e acesso ao seu Google Agenda. Com esta skill, você pode:\n\n• Fazer perguntas complexas e receber respostas detalhadas do Gemini\n• Consultar seus compromissos e eventos da agenda\n• Criar novos eventos no Google Agenda por voz\n• Ter conversas naturais e contextuais\n\nPara usar esta skill, você precisará vincular sua conta Google através do aplicativo Alexa. Isso permitirá acesso seguro ao Gemini e ao seu Google Agenda.\n\nExemplos de uso:\n- \"Alexa, peça ao gemini inteligente para explicar inteligência artificial\"\n- \"Alexa, peça ao gemini inteligente para consultar minha agenda de hoje\"\n- \"Alexa, peça ao gemini inteligente para marcar reunião amanhã às 14h\"\n\nSua privacidade é importante: todos os dados são processados de forma segura e você pode revogar o acesso a qualquer momento."
+        }
+      },
+      "isAvailableWorldwide": false,
+      "testingInstructions": "Para testar esta skill:\n1. Vincule sua conta Google no aplicativo Alexa\n2. Diga 'Alexa, abra gemini inteligente'\n3. Teste comandos como 'consulte minha agenda' ou 'converse comigo sobre tecnologia'",
+      "category": "PRODUCTIVITY",
+      "distributionCountries": ["BR"]
+    },
+    "apis": {
+      "custom": {
+        "endpoint": {
+          "uri": "https://seu-dominio.com/alexa"
+        },
+        "interfaces": [],
+        "regions": {
+          "NA": {
+            "endpoint": {
+              "uri": "https://seu-dominio.com/alexa"
+            }
+          },
+          "EU": {
+            "endpoint": {
+              "uri": "https://seu-dominio.com/alexa"
+            }
+          },
+          "FE": {
+            "endpoint": {
+              "uri": "https://seu-dominio.com/alexa"
+            }
+          }
+        }
+      }
+    },
+    "manifestVersion": "1.0",
+    "permissions": [
+      {
+        "name": "alexa::profile:email:read"
+      }
+    ],
+    "privacyAndCompliance": {
+      "allowsPurchases": false,
+      "locales": {
+        "pt-BR": {
+          "privacyPolicyUrl": "https://seu-dominio.com/privacy",
+          "termsOfUseUrl": "https://seu-dominio.com/terms"
+        }
+      },
+      "isExportCompliant": true,
+      "isChildDirected": false,
+      "usesPersonalInfo": true,
+      "containsAds": false
+    },
+    "events": {
+      "endpoint": {
+        "uri": "https://seu-dominio.com/alexa"
+      }
+    }
+  }
+}
+

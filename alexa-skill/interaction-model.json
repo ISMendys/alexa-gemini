@@ -1,0 +1,129 @@
+{
+  "interactionModel": {
+    "languageModel": {
+      "invocationName": "gemini inteligente",
+      "intents": [
+        {
+          "name": "ConversarComGemini",
+          "slots": [
+            {
+              "name": "pergunta",
+              "type": "AMAZON.SearchQuery"
+            }
+          ],
+          "samples": [
+            "converse com o gemini {pergunta}",
+            "pergunte ao gemini {pergunta}",
+            "fale com o gemini {pergunta}",
+            "gemini {pergunta}",
+            "me ajude com {pergunta}",
+            "responda {pergunta}",
+            "o que você sabe sobre {pergunta}",
+            "explique {pergunta}"
+          ]
+        },
+        {
+          "name": "ConsultarAgenda",
+          "slots": [
+            {
+              "name": "data",
+              "type": "AMAZON.DATE"
+            },
+            {
+              "name": "periodo",
+              "type": "PeriodoSlot"
+            }
+          ],
+          "samples": [
+            "consulte minha agenda",
+            "o que tenho na agenda",
+            "quais são meus compromissos",
+            "o que tenho marcado",
+            "agenda de {data}",
+            "compromissos de {data}",
+            "o que tenho {periodo}",
+            "agenda para {periodo}",
+            "compromissos para {periodo}"
+          ]
+        },
+        {
+          "name": "CriarEvento",
+          "slots": [
+            {
+              "name": "titulo",
+              "type": "AMAZON.SearchQuery"
+            },
+            {
+              "name": "data",
+              "type": "AMAZON.DATE"
+            },
+            {
+              "name": "hora",
+              "type": "AMAZON.TIME"
+            }
+          ],
+          "samples": [
+            "crie um evento {titulo}",
+            "marque {titulo}",
+            "agende {titulo}",
+            "adicione {titulo} na agenda",
+            "crie um compromisso {titulo}",
+            "marque {titulo} para {data}",
+            "agende {titulo} para {data} às {hora}",
+            "adicione {titulo} na agenda para {data}"
+          ]
+        },
+        {
+          "name": "AMAZON.CancelIntent",
+          "samples": []
+        },
+        {
+          "name": "AMAZON.HelpIntent",
+          "samples": []
+        },
+        {
+          "name": "AMAZON.StopIntent",
+          "samples": []
+        }
+      ],
+      "types": [
+        {
+          "name": "PeriodoSlot",
+          "values": [
+            {
+              "name": {
+                "value": "hoje"
+              }
+            },
+            {
+              "name": {
+                "value": "amanhã"
+              }
+            },
+            {
+              "name": {
+                "value": "esta semana"
+              }
+            },
+            {
+              "name": {
+                "value": "próxima semana"
+              }
+            },
+            {
+              "name": {
+                "value": "este mês"
+              }
+            },
+            {
+              "name": {
+                "value": "próximo mês"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  }
+}
+
